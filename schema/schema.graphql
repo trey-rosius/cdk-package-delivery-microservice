@@ -48,6 +48,7 @@ type User @aws_api_key {
   is_active: Boolean!
   last_name: String!
   user_type: USERTYPE!
+  delivery_agent_status: DELIVERY_AGENT_STATUS
   geolocation: Geolocation!
   address: Address!
   email: AWSEmail!
@@ -181,12 +182,17 @@ input CreateUserInput @aws_api_key {
   username: String!
   email: AWSEmail!
   is_active: Boolean!
+  delivery_agent_status: DELIVERY_AGENT_STATUS
   is_admin: Boolean!
   address: AddressInput!
   geolocation: GeolocationInput!
   phone_number: AWSPhone
   profile_pic_url: String
   user_type: USERTYPE!
+}
+enum DELIVERY_AGENT_STATUS {
+  FREE
+  OCCUPIED
 }
 
 input UpdateUserInput @aws_api_key {
@@ -196,6 +202,7 @@ input UpdateUserInput @aws_api_key {
   first_name: String
   last_name: String
   username: String
+  delivery_agent_status: DELIVERY_AGENT_STATUS
   user_type: USERTYPE
   address: AddressInput
   geolocation: GeolocationInput
