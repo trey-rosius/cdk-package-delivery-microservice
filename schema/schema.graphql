@@ -12,6 +12,8 @@ type Mutation {
   packageDeliveryMovement(
     input: CreateDeliveryInput!
   ): PackageDeliveryMovement! @aws_api_key
+  packageDropOff(input: CreateDeliveryInput!): PackageDeliveryMovement!
+    @aws_api_key
 
   assignPackageToDeliveryAgent(
     packageId: String!

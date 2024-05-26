@@ -1,20 +1,66 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as appsync from "aws-cdk-lib/aws-appsync";
-
+import * as cognito from "aws-cdk-lib/aws-cognito";
 import path = require("path");
 import process = require("process");
+const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+const CURRENT_DATE = new Date();
+const KEY_EXPIRATION_DATE = new Date(CURRENT_DATE.getTime() + SEVEN_DAYS);
 
 export class PackageDeliveryMicroserviceCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    const userPool: cognito.UserPool = new cognito.UserPool(
+      this,
+      "package-delivery-microservice-api-userpool",
+      {
+        selfSignUpEnabled: true,
+        accountRecovery: cognito.AccountRecovery.PHONE_AND_EMAIL,
+        userVerification: {
+          emailStyle: cognito.VerificationEmailStyle.CODE,
+        },
+        autoVerify: {
+          email: true,
+        },
+        standardAttributes: {
+          email: {
+            required: true,
+            mutable: true,
+          },
+        },
+      }
+    );
+
+    const userPoolClient: cognito.UserPoolClient = new cognito.UserPoolClient(
+      this,
+      "package-delivery-microservice-UserPoolClient",
+      {
+        userPool,
+      }
+    );
     //create our API
     const api = new appsync.GraphqlApi(this, "packageDeliveryMicroserviceAPI", {
       name: "packageDeliveryMicroserviceAPI",
       definition: appsync.Definition.fromFile("./schema/schema.graphql"),
       authorizationConfig: {
+        additionalAuthorizationModes: [
+          {
+            authorizationType: appsync.AuthorizationType.USER_POOL,
+            userPoolConfig: {
+              userPool: userPool,
+            },
+          },
+        ],
+
         defaultAuthorization: {
           authorizationType: appsync.AuthorizationType.API_KEY,
+          apiKeyConfig: {
+            name: "default",
+            description: "default auth mode",
+            expires: cdk.Expiration.atDate(KEY_EXPIRATION_DATE),
+          },
         },
       },
       logConfig: {
@@ -130,6 +176,17 @@ export class PackageDeliveryMicroserviceCdkStack extends cdk.Stack {
       runtime: appsync.FunctionRuntime.JS_1_0_0,
       code: appsync.Code.fromAsset(
         "./resolvers/delivery-service/packageDeliveryMovement.js"
+      ),
+    });
+
+    new appsync.Resolver(this, "packageDropOffResolver", {
+      api,
+      typeName: "Mutation",
+      fieldName: "packageDropOff",
+      dataSource: deliveryServiceAPIDatasource,
+      runtime: appsync.FunctionRuntime.JS_1_0_0,
+      code: appsync.Code.fromAsset(
+        "./resolvers/delivery-service/packageDropOff.js"
       ),
     });
 
