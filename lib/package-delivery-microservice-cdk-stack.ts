@@ -138,6 +138,17 @@ export class PackageDeliveryMicroserviceCdkStack extends cdk.Stack {
       ),
     });
 
+    new appsync.Resolver(this, "getUsersByTypeResolver", {
+      api,
+      typeName: "Query",
+      fieldName: "getUsersByType",
+      dataSource: userServiceAPIDatasource,
+      runtime: appsync.FunctionRuntime.JS_1_0_0,
+      code: appsync.Code.fromAsset(
+        "./resolvers/user-service/getUsersByType.js"
+      ),
+    });
+
     new appsync.Resolver(this, "createPackageResolver", {
       api,
       typeName: "Mutation",

@@ -24,6 +24,7 @@ type Mutation {
 
 type Query {
   getUserAccount(userId: String!): User! @aws_api_key
+  getUsersByType(userType: String!): [User!]! @aws_api_key
   getPackage(packageId: String!): Package! @aws_api_key
   sendPackagePickupRequest(packageId: String!): String! @aws_api_key
   getAllPackages(packageStatus: String): [Package]! @aws_api_key
