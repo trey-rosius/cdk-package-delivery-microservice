@@ -149,6 +149,17 @@ export class PackageDeliveryMicroserviceCdkStack extends cdk.Stack {
       ),
     });
 
+    new appsync.Resolver(this, "getPackagesByStatusResolver", {
+      api,
+      typeName: "Query",
+      fieldName: "getPackagesByStatus",
+      dataSource: packageServiceAPIDatasource,
+      runtime: appsync.FunctionRuntime.JS_1_0_0,
+      code: appsync.Code.fromAsset(
+        "./resolvers/package-service/getPackagesByStatus.js"
+      ),
+    });
+
     new appsync.Resolver(this, "createPackageResolver", {
       api,
       typeName: "Mutation",

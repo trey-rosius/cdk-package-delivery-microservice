@@ -27,7 +27,7 @@ type Query {
   getUsersByType(userType: String!): [User!]! @aws_api_key
   getPackage(packageId: String!): Package! @aws_api_key
   sendPackagePickupRequest(packageId: String!): String! @aws_api_key
-  getAllPackages(packageStatus: String): [Package]! @aws_api_key
+  getPackagesByStatus(packageStatus: String): PackagesResult! @aws_api_key
 
   getCurrentPackageMovement(id: String!): PackageDeliveryMovement! @aws_api_key
 }
@@ -108,6 +108,7 @@ input CreatePackageInput @aws_api_key {
   packageStatus: PACKAGE_STATUS!
   packageType: PACKAGE_TYPE!
   deliveryMode: PACKAGE_DELIVERY_MODE!
+  deliveryAgentId: String
 }
 
 enum DELIVERY_STATUS {
