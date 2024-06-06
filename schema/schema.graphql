@@ -20,6 +20,9 @@ type Mutation {
     deliveryAgentId: String!
   ): String! @aws_api_key
   packageDelivered(packageId: String!): Boolean! @aws_api_key
+
+  confirmPayment(payment_intent: String!): String! @aws_api_key
+  cancelPayment(payment_intent: String!): String! @aws_api_key
 }
 
 type Query {
@@ -256,4 +259,30 @@ input PackageMovementInput @aws_api_key {
   latitude: Float!
   deliveryAgentId: String!
   packageId: String!
+}
+
+type payment @aws_api_key {
+  id: String!
+  amount: Int!
+  user_id: String!
+  package_id: String!
+  status: STATUS!
+  payment_intent_id: String!
+  instance_id: String!
+}
+
+input paymentInput @aws_api_key {
+  amount: Int!
+  user_id: String!
+  package_id: String!
+  status: STATUS!
+  payment_intent_id: String
+  instance_id: String
+}
+
+enum STATUS {
+  IN_PROGRESS
+  FAILED
+  SUCCESS
+  CANCELLED
 }

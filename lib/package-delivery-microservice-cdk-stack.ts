@@ -84,6 +84,11 @@ export class PackageDeliveryMicroserviceCdkStack extends cdk.Stack {
       "https://2puvdrcruv.us-east-2.awsapprunner.com"
     );
 
+    const paymentsAPIDatasource = api.addHttpDataSource(
+      "paymentService",
+      "https://spzvacpdpm.us-east-2.awsapprunner.com"
+    );
+
     const nonDataSource = api.addNoneDataSource("none");
 
     // Create a function that will add user account
@@ -209,6 +214,28 @@ export class PackageDeliveryMicroserviceCdkStack extends cdk.Stack {
       runtime: appsync.FunctionRuntime.JS_1_0_0,
       code: appsync.Code.fromAsset(
         "./resolvers/delivery-service/packageDropOff.js"
+      ),
+    });
+
+    new appsync.Resolver(this, "confirmPaymentResolver", {
+      api,
+      typeName: "Mutation",
+      fieldName: "confirmPayment",
+      dataSource: paymentsAPIDatasource,
+      runtime: appsync.FunctionRuntime.JS_1_0_0,
+      code: appsync.Code.fromAsset(
+        "./resolvers/payments-service/confirmPayment.js"
+      ),
+    });
+
+    new appsync.Resolver(this, "cancelPaymentResolver", {
+      api,
+      typeName: "Mutation",
+      fieldName: "cancelPayment",
+      dataSource: paymentsAPIDatasource,
+      runtime: appsync.FunctionRuntime.JS_1_0_0,
+      code: appsync.Code.fromAsset(
+        "./resolvers/payments-service/cancelPayment.js"
       ),
     });
 
