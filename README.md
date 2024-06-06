@@ -1,3 +1,19 @@
+# Package Delivery Service CDK Application
+
+## Solutions Architecture
+
+![solutions-architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice-cdk/master/assets/solutions_arch.png)
+
+This application serves as a single endpoint entry into the package delivery microservice api created [here](https://github.com/trey-rosius/package-delivery-microservice).
+
+This application is a Graphql API built with AWS Appsync and Javascript Resolvers. No Lambda functions.
+
+One of the main strengths of Graphql is it's ability to grab data from different datasources.
+
+Our microservice API had 4 datasources hosted on AppRunner.
+
+With a singular API, it's easier to add authentication and authorization, which we've done that through AWS Cognito. We've also added rate limiting and throttling to prevent miss-use of the api using AWS Web Application Firewall(WAF)
+
 # Welcome to your CDK TypeScript project
 
 API_URL=""
