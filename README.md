@@ -42,11 +42,9 @@ https://3clidexd65h2ri2ppl7d3jf6ii.appsync-api.us-east-2.amazonaws.com/graphql
 
 ```
 
-# Welcome to your CDK TypeScript project
+# Package Pickup Request Load Test
 
-API_URL=""
-API_KEY=""
-echo $API
+Sent 3000 requests in 60 seconds
 
 jq -ncM '{method: "POST", url: "https://3clidexd65h2ri2ppl7d3jf6ii.appsync-api.us-east-2.amazonaws.com/graphql", body: {query: "query packagePickupRequest {
 sendPackagePickupRequest(packageId: \"8ecf99c5-99bf-465c-b978-e7d21f79cf3e\")
