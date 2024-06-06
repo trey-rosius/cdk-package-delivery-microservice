@@ -4,15 +4,43 @@
 
 ![solutions-architecture](https://raw.githubusercontent.com/trey-rosius/cdk-package-delivery-microservice/master/assets/solutions_arch.png)
 
-This application serves as a single endpoint entry into the package delivery microservice api created [here](https://github.com/trey-rosius/package-delivery-microservice).
+This application serves as a single endpoint entry into the package delivery microservices api created [here](https://github.com/trey-rosius/package-delivery-microservice).
 
-This application is a Graphql API built with AWS Appsync and Javascript Resolvers. No Lambda functions.
+The microservices API has 6 datasources hosted on AppRunner, 4 of which are relavant to this API.
 
-One of the main strengths of Graphql is it's ability to grab data from different datasources.
+This is a Graphql API built with AWS Appsync and Javascript Resolvers. No Lambda functions.
 
-Our microservice API had 4 datasources hosted on AppRunner.
+The reasons for using AWS AppSync are
 
-With a singular API, it's easier to add authentication and authorization, which we've done that through AWS Cognito. We've also added rate limiting and throttling to prevent miss-use of the api using AWS Web Application Firewall(WAF)
+- **Realtime capabilities**:AppSync supports real-time subscriptions, allowing you to build applications that update data instantly as changes occur.
+
+Clients using this api expect to get feedback in realtime.
+
+For example, a client would love to see in realtime, how their package is moving across a map to their delivery location.
+
+- **Efficient Data Access**: AppSync offers server-side data caching, which can improve the performance of your application by reducing the number of calls needed to fetch data from the original sources.
+
+- **Security and authorization**: AppSync integrates with AWS Cognito for user authentication and authorization. This ensures that only authorized users can access specific data in our application.
+- **Unified data access**: With AppSync's unified data access, we can create a flexible API that can securely access and combine data from various sources like DynamoDB, Lambda functions, and even HTTP APIs. This eliminates the need to manage multiple APIs for different data sources as shown in this sample application.
+
+## Build and Deploy
+
+From your CLI,
+
+```bash
+cdk synth
+
+cdk bootstrap
+
+cdk deploy
+
+```
+
+```AppSync endpoint
+
+https://3clidexd65h2ri2ppl7d3jf6ii.appsync-api.us-east-2.amazonaws.com/graphql
+
+```
 
 # Welcome to your CDK TypeScript project
 
