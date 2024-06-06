@@ -2,7 +2,7 @@
 
 ## Solutions Architecture
 
-![solutions-architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice-cdk/master/assets/solutions_arch.png)
+![solutions-architecture](https://raw.githubusercontent.com/trey-rosius/cdk-package-delivery-microservice/master/assets/solutions_arch.png)
 
 This application serves as a single endpoint entry into the package delivery microservice api created [here](https://github.com/trey-rosius/package-delivery-microservice).
 
