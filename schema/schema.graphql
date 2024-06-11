@@ -5,48 +5,54 @@ schema {
 }
 
 type Mutation {
-  createUserAccount(userInput: CreateUserInput!): User! @aws_api_key
-  updateUserAccount(userInput: UpdateUserInput!): User! @aws_api_key
-  createPackage(input: CreatePackageInput!): Package! @aws_api_key
-  updatePackage(input: UpdatePackageInput!): Package! @aws_api_key
+  createUserAccount(userInput: CreateUserInput!): User! @aws_cognito_user_pools
+  updateUserAccount(userInput: UpdateUserInput!): User! @aws_cognito_user_pools
+  createPackage(input: CreatePackageInput!): Package! @aws_cognito_user_pools
+  updatePackage(input: UpdatePackageInput!): Package! @aws_cognito_user_pools
   packageDeliveryMovement(
     input: CreateDeliveryInput!
-  ): PackageDeliveryMovement! @aws_api_key
+  ): PackageDeliveryMovement! @aws_cognito_user_pools
   packageDropOff(input: CreateDeliveryInput!): PackageDeliveryMovement!
-    @aws_api_key
+    @aws_cognito_user_pools
 
   assignPackageToDeliveryAgent(
     packageId: String!
     deliveryAgentId: String!
-  ): String! @aws_api_key
-  packageDelivered(packageId: String!): Boolean! @aws_api_key
+  ): String! @aws_cognito_user_pools
+  packageDelivered(packageId: String!): Boolean! @aws_cognito_user_pools
 
-  confirmPayment(payment_intent: String!): String! @aws_api_key
-  cancelPayment(payment_intent: String!): String! @aws_api_key
+  confirmPayment(payment_intent: String!): String! @aws_cognito_user_pools
+  cancelPayment(payment_intent: String!): String! @aws_cognito_user_pools
 }
 
 type Query {
-  getUserAccount(userId: String!): User! @aws_api_key
-  getUsersByType(userType: String!): [User!]! @aws_api_key
-  getPackage(packageId: String!): Package! @aws_api_key
-  sendPackagePickupRequest(packageId: String!): String! @aws_api_key
-  getPackagesByStatus(packageStatus: String): PackagesResult! @aws_api_key
+  getUserAccount(userId: String!): User! @aws_cognito_user_pools @aws_api_key
+  getUsersByType(userType: String!): [User!]! @aws_cognito_user_pools
+  getPackage(packageId: String!): Package! @aws_cognito_user_pools @aws_api_key
+  sendPackagePickupRequest(packageId: String!): String! @aws_cognito_user_pools
+  getPackagesByStatus(packageStatus: String): PackagesResult!
+    @aws_cognito_user_pools
+    @aws_api_key
 
-  getCurrentPackageMovement(id: String!): PackageDeliveryMovement! @aws_api_key
+  getCurrentPackageMovement(id: String!): PackageDeliveryMovement!
+    @aws_cognito_user_pools
 }
 type Subscription {
   updatePackageTimelapse: PackageDeliveryMovement
     @aws_subscribe(mutations: ["packageDeliveryMovement"])
+    @aws_cognito_user_pools
     @aws_api_key
 
   onCreateDeliveryUserAccountEvent(userType: String!): User
     @aws_subscribe(mutations: ["createUserAccount"])
+    @aws_cognito_user_pools
     @aws_api_key
   onCreatePackageEvent: Package
     @aws_subscribe(mutations: ["createPackage"])
+    @aws_cognito_user_pools
     @aws_api_key
 }
-type User @aws_api_key {
+type User @aws_cognito_user_pools @aws_api_key {
   id: String!
   username: String!
   first_name: String!
@@ -64,12 +70,12 @@ type User @aws_api_key {
   updated_at: AWSTimestamp
 }
 
-type AssignDeliveryPackageResult {
+type AssignDeliveryPackageResult @aws_cognito_user_pools @aws_api_key {
   packageId: String!
   user: User!
 }
 
-type Package @aws_api_key {
+type Package @aws_cognito_user_pools @aws_api_key {
   id: String!
   packageName: String!
   packageDescription: String!
@@ -84,7 +90,7 @@ type Package @aws_api_key {
   updatedAt: AWSTimestamp
 }
 
-type TransactionAddress @aws_api_key {
+type TransactionAddress @aws_cognito_user_pools @aws_api_key {
   city: String!
   street: String!
   zip: Int!
@@ -102,7 +108,7 @@ enum PACKAGE_STATUS {
   CANCELLED
   DAMAGED
 }
-input CreatePackageInput @aws_api_key {
+input CreatePackageInput @aws_cognito_user_pools {
   packageName: String!
   packageDescription: String!
   deliveryAddress: TransactionAddressInput!
@@ -119,7 +125,7 @@ enum DELIVERY_STATUS {
   DELIVERED
   DELAYED
 }
-type PackageDeliveryMovement @aws_api_key {
+type PackageDeliveryMovement @aws_cognito_user_pools @aws_api_key {
   id: String!
   packageId: String!
   deliveryAgentId: String!
@@ -130,7 +136,7 @@ type PackageDeliveryMovement @aws_api_key {
   createdAt: AWSTimestamp!
   updatedAt: AWSTimestamp
 }
-input CreateDeliveryInput @aws_api_key {
+input CreateDeliveryInput @aws_cognito_user_pools @aws_api_key {
   packageId: String!
   deliveryAgentId: String!
   senderId: String!
@@ -138,7 +144,7 @@ input CreateDeliveryInput @aws_api_key {
   status: DELIVERY_STATUS!
   currentPackageGeolocation: GeolocationInput!
 }
-input UpdateDeliveryInput @aws_api_key {
+input UpdateDeliveryInput @aws_cognito_user_pools @aws_api_key {
   packageId: String!
   deliveryAgentId: String!
   senderId: String!
@@ -147,7 +153,7 @@ input UpdateDeliveryInput @aws_api_key {
   currentPackageGeolocation: GeolocationInput!
   updatedAt: AWSTimestamp!
 }
-input UpdatePackageInput @aws_api_key {
+input UpdatePackageInput @aws_cognito_user_pools {
   id: String!
   packageName: String
   packageDescription: String
@@ -158,7 +164,7 @@ input UpdatePackageInput @aws_api_key {
   deliveryAgentId: String!
 }
 
-input TransactionAddressInput @aws_api_key {
+input TransactionAddressInput @aws_cognito_user_pools @aws_api_key {
   city: String!
   street: String!
   zip: Int!
@@ -183,7 +189,7 @@ enum PACKAGE_DELIVERY_MODE {
   PRO
 }
 
-input CreateUserInput @aws_api_key {
+input CreateUserInput @aws_cognito_user_pools {
   first_name: String!
   last_name: String!
   username: String!
@@ -202,7 +208,7 @@ enum DELIVERY_AGENT_STATUS {
   OCCUPIED
 }
 
-input UpdateUserInput @aws_api_key {
+input UpdateUserInput @aws_cognito_user_pools {
   id: ID!
   is_active: Boolean
   is_admin: Boolean
@@ -216,23 +222,23 @@ input UpdateUserInput @aws_api_key {
   phone_number: AWSPhone
   profile_pic_url: String
 }
-type Geolocation @aws_api_key {
+type Geolocation @aws_cognito_user_pools {
   longitude: Float!
   latitude: Float!
 }
 
-input GeolocationInput @aws_api_key {
+input GeolocationInput @aws_cognito_user_pools {
   longitude: Float!
   latitude: Float!
 }
 
-type Address @aws_api_key {
+type Address @aws_cognito_user_pools {
   street: String!
   city: String!
   zip: Int!
   country: String!
 }
-input AddressInput @aws_api_key {
+input AddressInput @aws_cognito_user_pools {
   street: String!
   city: String!
   zip: Int!
@@ -244,24 +250,24 @@ enum USERTYPE {
   CUSTOMER
   DELIVERY_AGENT
 }
-type PackagesResult @aws_api_key {
+type PackagesResult @aws_cognito_user_pools @aws_api_key {
   items: [Package!]!
 }
-type PackageMovement @aws_api_key {
+type PackageMovement @aws_cognito_user_pools @aws_api_key {
   longitude: Float!
   latitude: Float!
   deliveryAgentId: String!
   packageId: String!
 }
 
-input PackageMovementInput @aws_api_key {
+input PackageMovementInput @aws_cognito_user_pools @aws_api_key {
   longitude: Float!
   latitude: Float!
   deliveryAgentId: String!
   packageId: String!
 }
 
-type payment @aws_api_key {
+type payment @aws_cognito_user_pools {
   id: String!
   amount: Int!
   user_id: String!
@@ -271,7 +277,7 @@ type payment @aws_api_key {
   instance_id: String!
 }
 
-input paymentInput @aws_api_key {
+input paymentInput @aws_cognito_user_pools {
   amount: Int!
   user_id: String!
   package_id: String!
