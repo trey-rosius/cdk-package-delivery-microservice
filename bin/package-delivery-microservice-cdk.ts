@@ -18,7 +18,7 @@ new PackageDeliveryMicroserviceCdkStack(
 
     /* Uncomment the next line if you know exactly what Account and Region you
      * want to deploy the stack to. */
-    env: { account: "471112760066", region: "us-east-2" },
+    env: { account: "211125601863", region: "us-east-2" },
 
     /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
   }
